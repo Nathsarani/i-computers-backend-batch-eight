@@ -63,14 +63,15 @@ export function loginUser(req,res){
           Image:user.Image
         };
 
-        const token = jwt.sign(payload,"secretKey96$2025",{
+        const token = jwt.sign(payload, process.env.JWT_SECRET,{
           expiresIn: "15h"
         })
 
         res.json({
 
           message:"login sucessfull",
-          token:token
+          token:token,
+          role: user.role,
         })}
 
 
@@ -95,11 +96,11 @@ export function isAdmin(req){
         return false
     }
     if(req.user.role != "admin"){                       // admin nowana ayata blnna denne na 
-        return false
+        return false ;
     }
 
-    return true 
-    
+    return true ;
+     
 }                        // oya function eken true or false return 
 
 
