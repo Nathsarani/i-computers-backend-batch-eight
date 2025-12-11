@@ -11,7 +11,7 @@ import dotenv from "dotenv"
 
 dotenv.config()
  
-const mongoURI = process.env.MONGO_URL;
+const mongoURI = process.env.MONGO_URL
 
 mongoose.connect(mongoURI).then(
     ()=>{
@@ -37,16 +37,15 @@ app.use(                                          //middleware empty
 
 
             jwt.verify(token,process.env.JWT_SECRET,
-                (error,content)=>{
+                (err,content)=>{
 
                 if(content ==null){
 
                     console.log("Invalid Token")
-                    res.json({
-                        message:"Invalid Token"
-                    })
-
-                    return
+                
+                        res.status(401).json({
+                            message : "invalid token"
+                        })
 
                 }else{
                     console.log(content)

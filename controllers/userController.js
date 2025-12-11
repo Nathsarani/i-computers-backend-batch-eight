@@ -1,6 +1,8 @@
 import User from "../models/Users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export function createUser(req,res){
     const data= req.body         //request eke body eka da gththa variable ekakta

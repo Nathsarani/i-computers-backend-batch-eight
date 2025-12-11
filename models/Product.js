@@ -47,7 +47,14 @@ const productSchema = new mongoose.Schema(
         brand:{
             type:String,
             required:true,
-            default:"No Brand"
+            default:"Generic"
+
+        },
+
+        model:{
+            type : String,
+            required:true,
+            default:"standard"
 
         },
         stock:{
