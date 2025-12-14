@@ -37,17 +37,14 @@ export function loginUser(req,res){
   const email = req.body.email
   const password =req.body.password
 
-  User.find({email:email}).then(
-    (users)=>{
+  User.find({email:email}).then((users)=>{
 
       if(users[0]==null){
         res.json({
           message:"user not found"
-        })
-      }
-
-
-      else{
+        });
+        
+      }else{
 
         const user =users[0]
        // res.json(user) //user print
