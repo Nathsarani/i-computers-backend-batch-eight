@@ -144,4 +144,38 @@ export function updateProduct(req, res) {
 
 
 
+export function getProductByID(req, res) {
+	const productID = req.params.productID;
+
+	Product.findOne({ productID: productID })
+		.then((product) => {
+			if (product == null) {
+				res.status(404).json({
+					message: "Product not found",
+				});
+			} else {
+				if (product.isAvailable) {
+					res.json(product);
+				} else {
+					if (isAdmin(req)) {
+						res.json(product);
+					} else {
+						res.status(404).json({
+							message: "Product not found",
+						});
+					}
+				}
+			}
+		})
+		.catch((error) => {
+			res.status(500).json({
+				message: "Error fetching product",
+				error: error.message,
+			});
+		});
+}
+// add try catch for async-await
+
+
+
 
