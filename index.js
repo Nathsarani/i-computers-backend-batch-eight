@@ -8,6 +8,7 @@ import productRouter from "./routes/productRouter.js"
 
 import cors from "cors"
 import dotenv from "dotenv"
+import orderRouter from "./routes/orderRouter"
 
 dotenv.config()
  
@@ -80,6 +81,8 @@ app.use(                                          //middleware empty
 
 app.use("/api/users",userRouter)
 app.use("/api/products",productRouter)
+app.use("/api/orders",orderRouter)
+
 
 
 
