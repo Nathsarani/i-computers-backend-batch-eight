@@ -3,11 +3,11 @@ import Product from "../models/Product.js";
 import { isAdmin } from "./userController.js";
 
 export async function createOrder(req, res) {
-    console.log(req.body)
+    console.log(req.body);
 	//ORD000001
     if(req.user == null){
         res.status(401).json({
-            message: "Unauthorized"
+            message: "Unauthorized",
         });
         return;
     }
@@ -117,4 +117,34 @@ export async  function getOrders(req, res){
         res.json(orders)
 
     }
+}
+
+
+
+export async function updateOrderStatus(req, res) {
+	if (!isAdmin(req)) {
+		res.status(401).json({
+			message: "Unauthorized",
+		});
+		return;
+	}
+	try {
+		const orderId = req.params.orderId;
+		const status = req.body.status;
+		const notes = req.body.notes;
+
+		await Order.updateOne(
+			{ orderId: orderId },
+			{ status: status, notes: notes }
+		);
+
+		res.json({
+			message: "Order status updated successfully",
+		});
+	} catch (error) {
+		res.status(500).json({
+			message: "Error updating order status",
+			error: error.message,
+		});
+	}
 }

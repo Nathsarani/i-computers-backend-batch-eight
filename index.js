@@ -8,7 +8,7 @@ import productRouter from "./routes/productRouter.js"
 
 import cors from "cors"
 import dotenv from "dotenv"
-import orderRouter from "./routes/orderRouter"
+import orderRouter from "./routes/orderRouter.js"
 
 dotenv.config()
  
