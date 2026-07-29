@@ -29,17 +29,12 @@ dotenv.config();
 // 	},
 // });
 const transporter = nodemailer.createTransport({
-	host: "smtp.gmail.com",
-	port: 465,
-	secure: false,
+	service: "gmail",
 	auth: {
 		user: "wensoftone@gmail.com",
 		pass: process.env.GMAIL_APP_PASSWORD,
 	},
-	connectionTimeout: 10000,
-	socketTimeout: 10000,
 });
-
 
 export function createUser(req,res){
     const data= req.body         //request eke body eka da gththa variable ekakta
