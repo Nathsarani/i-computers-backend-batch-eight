@@ -28,6 +28,8 @@ dotenv.config();
 // 		pass: process.env.GMAIL_APP_PASSWORD,
 // 	},
 // });
+
+
 const transporter = nodemailer.createTransport({
 	service: "gmail",
 	auth: {
@@ -321,9 +323,12 @@ export async function sendOTP(req,res){
     };
 	
 	console.log("Sending email...");
+	console.log("1. OTP API called");
 
     await transporter.sendMail(message);
 	console.log("Email sent successfully");
+
+	console.log("2. Email sent");
 
     res.json({
       message:"OTP sent successfully"
