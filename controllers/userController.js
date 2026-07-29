@@ -7,18 +7,39 @@ import nodemailer from "nodemailer";
 import Otp from "../models/Otp.js";
 dotenv.config();
 
+// const transporter = nodemailer.createTransport({
+// 	service: "gmail",
+// 	host: "smtp.gmail.com",
+// 	port: 587,
+// 	secure: false,
+// 	auth: {
+// 		user: "wensoftone@gmail.com",
+// 		pass: process.env.GMAIL_APP_PASSWORD,
+// 	},
+// });
+
+
 const transporter = nodemailer.createTransport({
+
 	service: "gmail",
-	host: "smtp.gmail.com",
-	port: 587,
-	secure: false,
+
 	auth: {
 		user: "wensoftone@gmail.com",
 		pass: process.env.GMAIL_APP_PASSWORD,
 	},
+
 });
 
-console.log("GMAIL:", process.env.GMAIL_APP_PASSWORD);
+transporter.verify((error, success) => {
+
+	if(error){
+		console.log("SMTP ERROR:", error);
+	}
+	else{
+		console.log("SMTP READY");
+	}
+
+});
 
 export function createUser(req,res){
     const data= req.body         //request eke body eka da gththa variable ekakta
