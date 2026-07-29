@@ -317,28 +317,26 @@ export async function sendOTP(req,res){
 			text: "Your OTP code is "+otpCode
 		};
 
-    transporter.sendMail(message, (err, info) => {
-			if (err) {
-				res.status(500).json({
-					message: "Failed to send OTP",
-					error: err.message,
-				});
-			} else {
-				res.json({
-					message: "OTP sent successfully",
-				});
-			}
-		});
+ try {
 
-  }catch(error){
-    res.status(500).json({
-      message: "Failed to send OTP",
-			error: error.message,
-    })
-  }
+	await transporter.sendMail(message);
 
+	res.json({
+		message: "OTP sent successfully",
+	});
 
-} 
+} catch(error) {
+
+	console.log("SEND MAIL ERROR:", error);
+
+	res.status(500).json({
+		message: "Failed to send OTP",
+		error: error.message,
+	});
+
+	}
+}
+
 
 export async function getAllUsers(req, res) {
 	if(!isAdmin(req)){
