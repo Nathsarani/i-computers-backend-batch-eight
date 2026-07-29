@@ -18,6 +18,7 @@ const transporter = nodemailer.createTransport({
 	},
 });
 
+console.log("GMAIL:", process.env.GMAIL_APP_PASSWORD);
 
 export function createUser(req,res){
     const data= req.body         //request eke body eka da gththa variable ekakta
