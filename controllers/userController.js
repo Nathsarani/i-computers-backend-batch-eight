@@ -19,6 +19,15 @@ dotenv.config();
 // });
 
 
+// const transporter = nodemailer.createTransport({
+// 	host: "smtp.gmail.com",
+// 	port: 587,
+// 	secure: false,
+// 	auth: {
+// 		user: "wensoftone@gmail.com",
+// 		pass: process.env.GMAIL_APP_PASSWORD,
+// 	},
+// });
 const transporter = nodemailer.createTransport({
 	host: "smtp.gmail.com",
 	port: 587,
@@ -27,6 +36,8 @@ const transporter = nodemailer.createTransport({
 		user: "wensoftone@gmail.com",
 		pass: process.env.GMAIL_APP_PASSWORD,
 	},
+	connectionTimeout: 10000,
+	socketTimeout: 10000,
 });
 
 transporter.verify((error, success) => {
