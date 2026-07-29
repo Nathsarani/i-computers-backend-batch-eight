@@ -282,61 +282,67 @@ export async function validateOTPAndUpdatePassword(req, res) {
 
 
 export async function sendOTP(req,res){
-  try{
-  const email = req.params.email
-  const user = await User.findOne({
-    email:email
-  });
 
-    if (user == null) {
-			res.status(404).json({
-				message: "User not found",
-			});
-			return;
+  try {
 
-  }
+    const email = req.params.email;
 
-  await Otp.deleteMany({
-    email:email
-  })
+    const user = await User.findOne({
+      email: email
+    });
 
-  	const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    if(user == null){
+      return res.status(404).json({
+        message:"User not found"
+      });
+    }
+
+
+    await Otp.deleteMany({
+      email: email
+    });
+
+
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
 
     const otp = new Otp({
       email: email,
       otp: otpCode
-    })
+    });
+
 
     await otp.save();
-  
+
 
     const message = {
-			from: "wensoftone@gmail.com",
-			to: email,
-			subject: "Your OTP Code",
-			text: "Your OTP code is "+otpCode
-		};
+      from:"wensoftone@gmail.com",
+      to:email,
+      subject:"Your OTP Code",
+      text:"Your OTP code is " + otpCode
+    };
 
- try {
 
-	await transporter.sendMail(message);
+    await transporter.sendMail(message);
 
-	res.json({
-		message: "OTP sent successfully",
-	});
 
-} catch(error) {
+    res.json({
+      message:"OTP sent successfully"
+    });
 
-	console.log("SEND MAIL ERROR:", error);
 
-	res.status(500).json({
-		message: "Failed to send OTP",
-		error: error.message,
-	});
+  } catch(error) {
 
-	}
+    console.log("SEND MAIL ERROR:", error);
+
+    res.status(500).json({
+      message:"Failed to send OTP",
+      error:error.message
+    });
+
+  }
+
 }
-
 
 export async function getAllUsers(req, res) {
 	if(!isAdmin(req)){
