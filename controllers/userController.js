@@ -20,14 +20,13 @@ dotenv.config();
 
 
 const transporter = nodemailer.createTransport({
-
-	service: "gmail",
-
+	host: "smtp.gmail.com",
+	port: 587,
+	secure: false,
 	auth: {
 		user: "wensoftone@gmail.com",
 		pass: process.env.GMAIL_APP_PASSWORD,
 	},
-
 });
 
 transporter.verify((error, success) => {
@@ -321,10 +320,11 @@ export async function sendOTP(req,res){
       subject:"Your OTP Code",
       text:"Your OTP code is " + otpCode
     };
-
+	
+	console.log("Sending email...");
 
     await transporter.sendMail(message);
-
+	console.log("Email sent successfully");
 
     res.json({
       message:"OTP sent successfully"
