@@ -30,7 +30,7 @@ dotenv.config();
 // });
 const transporter = nodemailer.createTransport({
 	host: "smtp.gmail.com",
-	port: 587,
+	port: 465,
 	secure: false,
 	auth: {
 		user: "wensoftone@gmail.com",
@@ -40,16 +40,6 @@ const transporter = nodemailer.createTransport({
 	socketTimeout: 10000,
 });
 
-transporter.verify((error, success) => {
-
-	if(error){
-		console.log("SMTP ERROR:", error);
-	}
-	else{
-		console.log("SMTP READY");
-	}
-
-});
 
 export function createUser(req,res){
     const data= req.body         //request eke body eka da gththa variable ekakta
