@@ -29,17 +29,35 @@ dotenv.config();
 // 	},
 // });
 
-
 const transporter = nodemailer.createTransport({
-	service: "gmail",
+	host: "smtp.gmail.com",
+	port: 465,
+	secure: true,
 	auth: {
 		user: "wensoftone@gmail.com",
 		pass: process.env.GMAIL_APP_PASSWORD,
 	},
-	tls: {
-		rejectUnauthorized: false
-	},
 });
+
+
+transporter.verify((error, success) => {
+	if(error){
+		console.log("SMTP ERROR:", error);
+	}
+	else{
+		console.log("SMTP READY");
+	}
+});
+// const transporter = nodemailer.createTransport({
+// 	service: "gmail",
+// 	auth: {
+// 		user: "wensoftone@gmail.com",
+// 		pass: process.env.GMAIL_APP_PASSWORD,
+// 	},
+// 	tls: {
+// 		rejectUnauthorized: false
+// 	},
+// });
 
 export function createUser(req,res){
     const data= req.body         //request eke body eka da gththa variable ekakta
