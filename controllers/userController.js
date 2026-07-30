@@ -7,58 +7,17 @@ import nodemailer from "nodemailer";
 import Otp from "../models/Otp.js";
 dotenv.config();
 
-// const transporter = nodemailer.createTransport({
-// 	service: "gmail",
-// 	host: "smtp.gmail.com",
-// 	port: 587,
-// 	secure: false,
-// 	auth: {
-// 		user: "wensoftone@gmail.com",
-// 		pass: process.env.GMAIL_APP_PASSWORD,
-// 	},
-// });
-
-
-// const transporter = nodemailer.createTransport({
-// 	host: "smtp.gmail.com",
-// 	port: 587,
-// 	secure: false,
-// 	auth: {
-// 		user: "wensoftone@gmail.com",
-// 		pass: process.env.GMAIL_APP_PASSWORD,
-// 	},
-// });
-
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "wensoftone@gmail.com",
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-  connectionTimeout: 10000,
-  socketTimeout: 10000,
+	service: "gmail",
+	host: "smtp.gmail.com",
+	port: 587,
+	secure: false,
+	auth: {
+		user: "wensoftone@gmail.com",
+		pass: process.env.GMAIL_APP_PASSWORD,
+	},
 });
 
-transporter.verify((error, success) => {
-
-	if(error){
-		console.log("SMTP ERROR:", error);
-	}
-	else{
-		console.log("SMTP READY");
-	}
-
-});
-// const transporter = nodemailer.createTransport({
-// 	service: "gmail",
-// 	auth: {
-// 		user: "wensoftone@gmail.com",
-// 		pass: process.env.GMAIL_APP_PASSWORD,
-// 	},
-// 	tls: {
-// 		rejectUnauthorized: false
-// 	},
-// });
 
 export function createUser(req,res){
     const data= req.body         //request eke body eka da gththa variable ekakta
@@ -301,71 +260,63 @@ export async function validateOTPAndUpdatePassword(req, res) {
 
 
 export async function sendOTP(req,res){
+  try{
+  const email = req.params.email
+  const user = await User.findOne({
+    email:email
+  });
 
-  try {
+    if (user == null) {
+			res.status(404).json({
+				message: "User not found",
+			});
+			return;
 
-    const email = req.params.email;
+  }
 
-    const user = await User.findOne({
-      email: email
-    });
+  await Otp.deleteMany({
+    email:email
+  })
 
-    if(user == null){
-      return res.status(404).json({
-        message:"User not found"
-      });
-    }
-
-
-    await Otp.deleteMany({
-      email: email
-    });
-
-
-    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-
+  	const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
 
     const otp = new Otp({
       email: email,
       otp: otpCode
-    });
-
+    })
 
     await otp.save();
-
+  
 
     const message = {
-      from:"wensoftone@gmail.com",
-      to:email,
-      subject:"Your OTP Code",
-      text:"Your OTP code is " + otpCode
-    };
-	
-	console.log("Sending email...");
-	console.log("1. OTP API called");
+			from: "wensoftone@gmail.com",
+			to: email,
+			subject: "Your OTP Code",
+			text: "Your OTP code is "+otpCode
+		};
 
-    await transporter.sendMail(message);
-	console.log("Email sent successfully");
+    transporter.sendMail(message, (err, info) => {
+			if (err) {
+				res.status(500).json({
+					message: "Failed to send OTP",
+					error: err.message,
+				});
+			} else {
+				res.json({
+					message: "OTP sent successfully",
+				});
+			}
+		});
 
-	console.log("2. Email sent");
-
-    res.json({
-      message:"OTP sent successfully"
-    });
-
-
-  } catch(error) {
-
-    console.log("SEND MAIL ERROR:", error);
-
+  }catch(error){
     res.status(500).json({
-      message:"Failed to send OTP",
-      error:error.message
-    });
-
+      message: "Failed to send OTP",
+			error: error.message,
+    })
   }
 
-}
+
+} 
 
 export async function getAllUsers(req, res) {
 	if(!isAdmin(req)){
