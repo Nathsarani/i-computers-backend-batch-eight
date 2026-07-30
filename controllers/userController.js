@@ -17,13 +17,20 @@ dotenv.config();
 // 		pass: process.env.GMAIL_APP_PASSWORD,
 // 	},
 // });
-
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "wensoftone@gmail.com",
     pass: process.env.GMAIL_APP_PASSWORD,
   },
+});
+
+transporter.verify((error, success) => {
+  if(error){
+    console.log("SMTP ERROR:", error);
+  } else {
+    console.log("SMTP READY");
+  }
 });
 
 
