@@ -278,29 +278,70 @@ export async function validateOTPAndUpdatePassword(req, res) {
 
 export async function sendOTP(req,res){
   try {
-  console.log("BEFORE SEND MAIL");
 
-  const info = await transporter.sendMail(message);
+    const email = req.params.email;
 
-  console.log("AFTER SEND MAIL");
-  console.log(info.response);
+    const user = await User.findOne({
+      email: email
+    });
 
-  res.json({
-    message: "OTP sent successfully",
-  });
+    if(user == null){
+      return res.status(404).json({
+        message:"User not found"
+      });
+    }
 
-} catch(error) {
 
-  console.log("SEND MAIL ERROR:", error);
+    await Otp.deleteMany({
+      email: email
+    });
 
-  res.status(500).json({
-    message:"Failed to send OTP",
-    error:error.message
-  });
 
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+
+    const otp = new Otp({
+      email: email,
+      otp: otpCode
+    });
+
+    await otp.save();
+
+
+    const message = {
+      from:"wensoftone@gmail.com",
+      to:email,
+      subject:"Your OTP Code",
+      text:"Your OTP code is " + otpCode
+    };
+
+
+    console.log("BEFORE SEND MAIL");
+
+
+    const info = await transporter.sendMail(message);
+
+
+    console.log("AFTER SEND MAIL");
+    console.log(info.response);
+
+
+    res.json({
+      message:"OTP sent successfully"
+    });
+
+
+  } catch(error){
+
+    console.log("SEND MAIL ERROR:", error);
+
+    res.status(500).json({
+      message:"Failed to send OTP",
+      error:error.message
+    });
+
+  }
 }
-
-} 
 
 export async function getAllUsers(req, res) {
 	if(!isAdmin(req)){
