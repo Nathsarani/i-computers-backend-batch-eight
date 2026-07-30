@@ -18,11 +18,13 @@ dotenv.config();
 // 	},
 // });
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "wensoftone@gmail.com",
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
+  host:"smtp.gmail.com",
+  port:465,
+  secure:true,
+  auth:{
+    user:"wensoftone@gmail.com",
+    pass:process.env.GMAIL_APP_PASSWORD
+  }
 });
 
 transporter.verify((error, success) => {
