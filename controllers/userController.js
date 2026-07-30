@@ -18,9 +18,9 @@ dotenv.config();
 // 	},
 // });
 const transporter = nodemailer.createTransport({
-  host:"smtp.gmail.com",
-  port:465,
-  secure:true,
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth:{
     user:"wensoftone@gmail.com",
     pass:process.env.GMAIL_APP_PASSWORD
@@ -277,61 +277,28 @@ export async function validateOTPAndUpdatePassword(req, res) {
 
 
 export async function sendOTP(req,res){
-  try{
-  const email = req.params.email
-  const user = await User.findOne({
-    email:email
+  try {
+  console.log("BEFORE SEND MAIL");
+
+  const info = await transporter.sendMail(message);
+
+  console.log("AFTER SEND MAIL");
+  console.log(info.response);
+
+  res.json({
+    message: "OTP sent successfully",
   });
 
-    if (user == null) {
-			res.status(404).json({
-				message: "User not found",
-			});
-			return;
+} catch(error) {
 
-  }
+  console.log("SEND MAIL ERROR:", error);
 
-  await Otp.deleteMany({
-    email:email
-  })
+  res.status(500).json({
+    message:"Failed to send OTP",
+    error:error.message
+  });
 
-  	const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-    const otp = new Otp({
-      email: email,
-      otp: otpCode
-    })
-
-    await otp.save();
-  
-
-    const message = {
-			from: "wensoftone@gmail.com",
-			to: email,
-			subject: "Your OTP Code",
-			text: "Your OTP code is "+otpCode
-		};
-
-    transporter.sendMail(message, (err, info) => {
-			if (err) {
-				res.status(500).json({
-					message: "Failed to send OTP",
-					error: err.message,
-				});
-			} else {
-				res.json({
-					message: "OTP sent successfully",
-				});
-			}
-		});
-
-  }catch(error){
-    res.status(500).json({
-      message: "Failed to send OTP",
-			error: error.message,
-    })
-  }
-
+}
 
 } 
 
